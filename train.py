@@ -115,7 +115,7 @@ def train(batch_size, epochs, lr_base, lr_power, weight_decay, classes,
     with open(conf.test_file_path) as f:
         test_image_list = f.read().splitlines()
         
-    print(test_image_list)
+    #print(test_image_list)
     
     class SaveSampleImages(keras.callbacks.Callback):
         def on_train_begin(self, logs={}):
@@ -137,7 +137,7 @@ def train(batch_size, epochs, lr_base, lr_power, weight_decay, classes,
           
             results = inference_model(self.model, image_size, test_image_list, data_dir, label_dir, run_name)
                                     
-            for image, result in zip(image_list, results):                
+            for image, result in zip(test_image_list, results):                
                 result.save('%s/%s.png' % (directory, image))
                         
             self.batchnum+=1
@@ -210,7 +210,7 @@ def train(batch_size, epochs, lr_base, lr_power, weight_decay, classes,
 
             # save_to_dir='Images/'
         ),
-        get_file_len(train_file_path),
+        10,#get_file_len(train_file_path),
         epochs=epochs,
         callbacks=callbacks,
         workers=4,

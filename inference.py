@@ -43,8 +43,8 @@ def inference_model(model, image_size, image_list, data_dir, label_dir, run_name
 
         image = np.expand_dims(image, axis=0)
         image = preprocess_input(image)
-        print("Image Shape", image.shape)
-        print("Image Size", image_size)
+#        print("Image Shape", image.shape)
+#        print("Image Size", image_size)
         
         result = model.predict(image, batch_size=1)
         result = np.argmax(np.squeeze(result), axis=-1).astype(np.uint8)
