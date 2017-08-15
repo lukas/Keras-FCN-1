@@ -210,7 +210,7 @@ def train(batch_size, epochs, lr_base, lr_power, weight_decay, classes,
 
             # save_to_dir='Images/'
         ),
-        10,#get_file_len(train_file_path),
+        2000,#get_file_len(train_file_path),
         epochs=epochs,
         callbacks=callbacks,
         workers=4,

@@ -1,0 +1,37 @@
+wandb_version: 1
+
+batch_size:
+  desc: Number of training examples in a mini-batch
+  value: 16
+epochs:
+  desc: Number of epochs in training
+  value: 250
+model_name:
+  desc: Type of model
+  value: 'AtrousFCN_Resnet50_16s'
+train_file_path:
+  desc: List of training data files
+  value: '/home/l2k/.keras/datasets/VOC2012/VOCdevkit/VOC2012/ImageSets/Segmentation/train.txt'
+
+val_file_path:
+  desc: List of validation files
+  value: '/home/l2k/.keras/datasets/VOC2012/combined_imageset_val.txt'
+test_file_path:
+  desc: List of test files
+  value: '/home/l2k/src/Keras-FCN/test_images.txt'
+data_dir:
+  desc: Raw image directory
+  value: '/home/l2k/.keras/datasets/VOC2012/VOCdevkit/VOC2012/JPEGImages'
+label_dir:
+  desc: Label directory
+  value: '/home/l2k/.keras/datasets/VOC2012/combined_annotations'
+
+data_suffix:
+  desc: file extension of raw images
+  value: '.jpg'
+label_suffix:
+  desc: file extension of segmentation labels
+  value: '.png'
+classes:
+  desc: number of classes
+  value: 21
