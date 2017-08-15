@@ -153,7 +153,8 @@ def train(batch_size, epochs, lr_base, lr_power, weight_decay, classes,
     f = open(model_path, 'w')
     model_json = model.to_json()
     f.write(model_json)
-    f.close
+    f.close()
+    
     img_path = os.path.join(save_path, "model.png")
     # #vis_util.plot(model, to_file=img_path, show_shapes=True)
     model.summary()
