@@ -5,7 +5,7 @@ from PIL import Image
 import numpy as np
 import os
 import cv2
-
+import sys
 
 def center_crop(x, center_crop_size, data_format, **kwargs):
     if data_format == 'channels_first':
@@ -181,7 +181,17 @@ class SegDirectoryIterator(Iterator):
         super(SegDirectoryIterator, self).__init__(
             self.nb_sample, batch_size, shuffle, seed)
 
+
     def next(self):
+        for i in range(10):
+            try:
+                return self.protected_next()
+            except Exception:
+                print "Unexpected error:", sys.exc_info()[0]
+        print("Too many errors, exiting...")
+        
+    def protected_next(self):
+        
         with self.lock:
             index_array, current_index, current_batch_size = next(
                 self.index_generator)
@@ -191,7 +201,7 @@ class SegDirectoryIterator(Iterator):
         if self.target_size:
             # TODO(ahundt) make dtype properly configurable
             batch_x = np.zeros((current_batch_size,) + self.image_shape)
-            if self.loss_shape is None and self.label_file_format is 'img':
+            if self.loss_shape is None and self.label_file_format is not 'npy':
                 batch_y = np.zeros((current_batch_size,) + self.label_shape,
                                    dtype=int)
             elif self.loss_shape is None:
@@ -223,6 +233,14 @@ class SegDirectoryIterator(Iterator):
                     if self.label_file_format is not 'npy':
                         y = img_to_array(
                             label, data_format=self.data_format).astype(int)
+                        if y.shape[2] > 1:    # not a greyscale image
+                            if self.data_format == 'channels_first':
+                                raise NotImplementedError
+                            #print("y", y.shape)
+                            y = y[:,:,:1]
+                            #print("y new", y.shape)
+
+                            
                     img_w, img_h = img.size
                     if self.pad_size:
                         pad_w = max(self.pad_size[1] - img_w, 0)

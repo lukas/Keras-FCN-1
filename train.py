@@ -21,20 +21,18 @@ import argparse
 import wandb
 import keras
 
+
+
 parser = argparse.ArgumentParser(description='Run training')
 parser.add_argument('name', help='name of the run')
-
 parser.add_argument("--load-model", help="load previously saved h5 model")
 
 args = parser.parse_args()
 run_name = args.name
 
+wandb.sync([args.name + '/*'])
+
 conf = wandb.Config(args)
-
-wandb.sync(run_name)
-
-
-
 
 def train(batch_size, epochs, lr_base, lr_power, weight_decay, classes,
           model_name, train_file_path, val_file_path,
@@ -130,12 +128,14 @@ def train(batch_size, epochs, lr_base, lr_power, weight_decay, classes,
             #model_name = 'DenseNet_FCN'
             weight_file = 'checkpoint_weights.hdf5'
             image_size = (320, 320)
-            data_dir        = os.path.expanduser('~/.keras/datasets/VOC2012/VOCdevkit/VOC2012/JPEGImages')
-            label_dir       = os.path.expanduser('~/.keras/datasets/VOC2012/VOCdevkit/VOC2012/SegmentationClass')
-
-
+            log_file = os.path.join(directory, 'metrics.json')
           
-            results = inference_model(self.model, image_size, test_image_list, data_dir, label_dir, run_name)
+            results = inference_model(self.model, image_size, test_image_list,
+                                      conf.data_dir, conf.label_dir, run_name,
+                                      label_suffix=conf.label_suffix, data_suffix=conf.data_suffix,
+                                      target_size=target_size, log_file=log_file
+
+            )
                                     
             for image, result in zip(test_image_list, results):                
                 result.save('%s/%s.png' % (directory, image))
@@ -214,7 +214,7 @@ def train(batch_size, epochs, lr_base, lr_power, weight_decay, classes,
         2000,#get_file_len(train_file_path),
         epochs=epochs,
         callbacks=callbacks,
-        workers=4,
+        workers=12,
         # validation_data=val_datagen.flow_from_directory(
         #     file_path=val_file_path, data_dir=data_dir, data_suffix='.jpg',
         #     label_dir=label_dir, label_suffix='.png',classes=classes,
